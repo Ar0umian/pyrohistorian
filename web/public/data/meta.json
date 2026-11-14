@@ -1,0 +1,208 @@
+{
+  "contract_version": 1,
+  "project": "PyroHistorian",
+  "regions": [
+    {
+      "id": "region_1",
+      "name": "CHANGE_ME",
+      "bbox": {
+        "south": -20.0,
+        "west": 130.0,
+        "north": -10.0,
+        "east": 140.0
+      }
+    }
+  ],
+  "grid": {
+    "step_deg": 0.25
+  },
+  "time": {
+    "first_year": 2000,
+    "last_year": 2026,
+    "overlap_start_year": 2012,
+    "weeks_per_year": 52,
+    "week_rule": "week = min(52, (day_of_year - 1) // 7 + 1)"
+  },
+  "units": {
+    "metric": "detections_per_week"
+  },
+  "sensors": {
+    "legacy": {
+      "product": "modis",
+      "name": "MODIS",
+      "satellites": [
+        "AQUA"
+      ],
+      "operating_start": "2002-07-04",
+      "operating_end": null
+    },
+    "new": {
+      "product": "viirs_snpp",
+      "name": "VIIRS",
+      "satellites": [],
+      "operating_start": "2012-01-20",
+      "operating_end": null
+    }
+  },
+  "filters": {
+    "keep_fire_types": [
+      0
+    ],
+    "min_modis_confidence": 30,
+    "viirs_confidence_keep": [
+      "n",
+      "nominal",
+      "h",
+      "high"
+    ]
+  },
+  "coverage": {
+    "legacy": {
+      "start": "2002-07-04",
+      "end": "2026-10-05"
+    },
+    "new": {
+      "start": "2012-01-20",
+      "end": "2026-10-05"
+    }
+  },
+  "absent_means": "zero detections if the week is inside meta.coverage for that sensor, otherwise missing",
+  "quality_codes": {
+    "G": {
+      "label": "Measured",
+      "meaning": "new-sensor (VIIRS) count"
+    },
+    "U": {
+      "label": "Converted",
+      "meaning": "legacy-sensor (MODIS) count converted with uncertainty"
+    },
+    "B": {
+      "label": "Missing",
+      "meaning": "no valid value (week outside sensor coverage)"
+    }
+  },
+  "alarm": {
+    "states": [
+      "Normal",
+      "Elevated",
+      "Alarm"
+    ],
+    "elevated_percentile": 90,
+    "alarm_percentile": 97.5,
+    "min_abs_weekly_count": 5,
+    "hysteresis_weeks": 1,
+    "critical_min_weeks": 2
+  },
+  "ui": {
+    "state_colors": {
+      "Normal": "grey",
+      "Elevated": "amber",
+      "Alarm": "red"
+    },
+    "uncertain_pattern": "hatched",
+    "modes": [
+      "legacy_only",
+      "harmonized"
+    ]
+  },
+  "validation_method": "leave_one_year_out",
+  "conversion": [
+    {
+      "region_id": "region_1",
+      "month": 1,
+      "median": 7.888,
+      "low": 2.0,
+      "high": 10.3667,
+      "n_years": 15
+    },
+    {
+      "region_id": "region_1",
+      "month": 2,
+      "median": 7.7581,
+      "low": 2.8919,
+      "high": 10.3387,
+      "n_years": 13
+    },
+    {
+      "region_id": "region_1",
+      "month": 3,
+      "median": 8.2564,
+      "low": 5.3782,
+      "high": 12.0178,
+      "n_years": 15
+    },
+    {
+      "region_id": "region_1",
+      "month": 4,
+      "median": 8.453,
+      "low": 5.7094,
+      "high": 14.6751,
+      "n_years": 15
+    },
+    {
+      "region_id": "region_1",
+      "month": 5,
+      "median": 6.99,
+      "low": 0.2435,
+      "high": 8.7364,
+      "n_years": 15
+    },
+    {
+      "region_id": "region_1",
+      "month": 6,
+      "median": 7.109,
+      "low": 5.6292,
+      "high": 7.96,
+      "n_years": 15
+    },
+    {
+      "region_id": "region_1",
+      "month": 7,
+      "median": 6.8424,
+      "low": 4.2771,
+      "high": 8.8255,
+      "n_years": 14
+    },
+    {
+      "region_id": "region_1",
+      "month": 8,
+      "median": 7.6195,
+      "low": 6.0541,
+      "high": 15.7722,
+      "n_years": 14
+    },
+    {
+      "region_id": "region_1",
+      "month": 9,
+      "median": 7.7436,
+      "low": 7.0773,
+      "high": 9.7502,
+      "n_years": 14
+    },
+    {
+      "region_id": "region_1",
+      "month": 10,
+      "median": 8.3715,
+      "low": 7.2599,
+      "high": 9.5768,
+      "n_years": 14
+    },
+    {
+      "region_id": "region_1",
+      "month": 11,
+      "median": 8.5657,
+      "low": 7.0019,
+      "high": 9.6488,
+      "n_years": 14
+    },
+    {
+      "region_id": "region_1",
+      "month": 12,
+      "median": 8.0735,
+      "low": 6.6519,
+      "high": 10.8534,
+      "n_years": 14
+    }
+  ],
+  "acknowledgement": "We acknowledge the use of data and/or imagery from NASA's Fire Information for Resource Management System (FIRMS) (https://earthdata.nasa.gov/firms), part of NASA's Earth Science Data and Information System (ESDIS)."
+}
