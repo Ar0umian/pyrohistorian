@@ -186,3 +186,84 @@ export function sensorProfile(evidence) {
   byMonth.concat(byStrength).forEach(function (g) { g.rate = g.cellWeeks > 0 ? g.confirmed / g.cellWeeks : null; });
   return { byMonth: byMonth, byStrength: byStrength };
 }
+
+// ======================================================================
+// SIGNAL TRIAGE (cell level). The noise of a very sensitive sensor lives in the small signals:
+// a VIIRS cell-week with 1 or 2 detections. Every VIIRS-active cell-week in a week watched by BOTH
+// sensors is a "signal". The rule uses VIIRS-only features (strength, active neighbours, continuity in time).
+// MODIS is used only as an independent check (did MODIS also see that cell in that week?), so the
+// check is not circular. CAUTION: "not confirmed" does not mean "false": a real small fire can be
+// below the detection limit of MODIS.
+// ======================================================================
+
+const CURVE_STRENGTHS = [1, 2, 3, 4, 5, 6, 8, 10, 15, 20, 30];
+
+// All signals of the area. evidence = buildEvidence(...)
+export function buildSignals(evidence) {
+  // Which cell was VIIRS-active in which week (to look at the week before and after).
+  const active = new Set();
+  evidence.byIdx.forEach(function (ev) {
+    ev.cells.forEach(function (x) { if (x.nw > 0) active.add(x.r + "," + x.c + "," + ev.idx); });
+  });
+
+  const signals = [];
+  evidence.byIdx.forEach(function (ev) {
+    if (!ev.overlap) return;                       // both sensors must be watching
+    const sameWeek = new Set();
+    ev.cells.forEach(function (x) { if (x.nw > 0) sameWeek.add(x.r + "," + x.c); });
+    ev.cells.forEach(function (x) {
+      if (!(x.nw > 0)) return;
+      let neighbours = 0;
+      for (let dr = -1; dr <= 1; dr++) {
+        for (let dc = -1; dc <= 1; dc++) {
+          if ((dr !== 0 || dc !== 0) && sameWeek.has((x.r + dr) + "," + (x.c + dc))) neighbours++;
+        }
+      }
+      const persistent = active.has(x.r + "," + x.c + "," + (ev.idx - 1)) || active.has(x.r + "," + x.c + "," + (ev.idx + 1));
+      signals.push({ idx: ev.idx, year: ev.year, week: ev.week, r: x.r, c: x.c, lat: x.lat, lon: x.lon,
+                     nw: x.nw, legacy: x.legacy, confirmed: x.legacy > 0, nb: neighbours, persist: persistent });
+    });
+  });
+  return signals;
+}
+
+// minStrength: detections per cell-week needed to be "serious".
+// minNeighbours: active neighbour cells that also make a signal serious (0 = this rule is off).
+// keepPersistent: a signal that continues from the week before or after is also serious.
+export function defaultSignalPolicy() {
+  return { minStrength: 3, minNeighbours: 0, keepPersistent: false };
+}
+
+export function isSerious(signal, policy) {
+  if (signal.nw >= policy.minStrength) return true;
+  if (policy.minNeighbours > 0 && signal.nb >= policy.minNeighbours) return true;
+  if (policy.keepPersistent && signal.persist) return true;
+  return false;
+}
+
+// What a policy does: how many signals are kept, and what MODIS says about the kept and the dropped ones.
+export function evaluate(signals, policy) {
+  let kept = 0, keptConfirmed = 0, totalConfirmed = 0;
+  signals.forEach(function (s) {
+    if (s.confirmed) totalConfirmed++;
+    if (isSerious(s, policy)) { kept++; if (s.confirmed) keptConfirmed++; }
+  });
+  const total = signals.length, dropped = total - kept, droppedConfirmed = totalConfirmed - keptConfirmed;
+  return {
+    total: total, kept: kept, dropped: dropped,
+    totalConfirmed: totalConfirmed, keptConfirmed: keptConfirmed, droppedConfirmed: droppedConfirmed,
+    loadCut: total > 0 ? dropped / total : null,                              // share of signals taken off the emergency list
+    keptConfirmShare: kept > 0 ? keptConfirmed / kept : null,                  // of the kept: share MODIS also saw
+    retained: totalConfirmed > 0 ? keptConfirmed / totalConfirmed : null,      // of all MODIS-confirmed: share we still keep
+    droppedConfirmShare: dropped > 0 ? droppedConfirmed / dropped : null       // of the dropped: share MODIS saw (what we risk)
+  };
+}
+
+// The same policy for several strength thresholds (to draw the trade-off curve).
+export function tradeoffCurve(signals, policy) {
+  return CURVE_STRENGTHS.map(function (t) {
+    const result = evaluate(signals, { minStrength: t, minNeighbours: policy.minNeighbours, keepPersistent: policy.keepPersistent });
+    result.minStrength = t;
+    return result;
+  });
+}
