@@ -1,63 +1,119 @@
 <!DOCTYPE html>
-<!-- AI disclosure: written with help from Claude (Anthropic); must be reviewed by the team. -->
+<!-- AI disclosure: layout and styling written with help from Claude (Anthropic); reviewed by the team. Update if other tools were used. -->
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>PyroHistorian</title>
+  <title>PYROHISTORIAN · Burning-activity alarm console</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Operator-style console for the harmonized MODIS and VIIRS fire record: seasonal baseline, alarm states and quality codes. Built for the NASA Space Apps Challenge 2026.">
+  <meta name="theme-color" content="#0c0f11">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' fill='%230c0f11'/%3E%3Cpath fill='%23f2a413' d='M12 3C12 3 7 8 7 12.5a5 5 0 0 0 10 0C17 8 12 3 12 3z'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <link rel="stylesheet" href="styles.css">
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </head>
 <body>
-  <div id="app-error"></div>
+  <a class="skip" href="#main">Skip to content</a>
+  <div id="app-error" role="alert"></div>
+
   <header class="topbar">
-    <div class="logo"></div>
+    <div class="logo" aria-hidden="true">
+      <svg viewBox="0 0 28 28" width="28" height="28" focusable="false">
+        <rect x="1" y="1" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M14 5c0 0-6 5.8-6 10.6a6 6 0 0 0 12 0C20 10.8 14 5 14 5z" fill="#f2a413"/>
+        <path d="M14 14c0 0-2.6 2.4-2.6 4.6a2.6 2.6 0 0 0 5.2 0C16.6 16.4 14 14 14 14z" fill="#101316"/>
+      </svg>
+    </div>
     <div class="brand">
-      <h1>PyroHistorian</h1>
+      <h1>PYROHISTORIAN</h1>
       <p>Burning-activity alarm console · MODIS and VIIRS harmonized</p>
     </div>
+    <nav class="nav-links" aria-label="Screens">
+      <a href="#section-area">Overview</a>
+      <a href="#section-history">Historian</a>
+      <a href="#section-alerts">Alarm list</a>
+      <a href="#section-validation">Validation</a>
+    </nav>
     <div class="topbar-right">
-      <div id="mode-toggle"></div>
+      <span class="ctl-label">RECORD</span>
+      <div id="mode-toggle" role="group" aria-label="Record shown"></div>
       <span class="badge ok" id="data-badge">historical record</span>
     </div>
   </header>
 
-  <main class="layout">
+  <div class="banner" role="status">
+    <span class="banner-label">Alarm summary</span>
+    <span class="banner-item">Active alerts <span class="count" id="alert-count" aria-live="polite"></span></span>
+    <span class="banner-item banner-note">Advisory only · not a control system</span>
+    <span class="banner-right">NASA Space Apps 2026 · Harmonization of MODIS and VIIRS Hot Spots</span>
+  </div>
+
+  <main class="layout" id="main">
     <aside class="col col-left">
-      <section class="card">
-        <h2>Area</h2>
-        <div id="aoi-message"></div>
+      <section class="card" id="section-area">
+        <h2><span class="tag-id">AOI-01</span> Area selection</h2>
+        <div id="aoi-message" aria-live="polite"></div>
         <div id="map"></div>
+        <dl class="specs">
+          <div><dt>Source</dt><dd>NASA FIRMS</dd></div>
+          <div><dt>Sensors</dt><dd>MODIS · VIIRS</dd></div>
+          <div><dt>Unit</dt><dd>detections / week</dd></div>
+        </dl>
       </section>
     </aside>
 
     <section class="col col-center">
       <section class="card">
-        <h2>Signal triage <span class="sub">which VIIRS signals deserve action</span></h2>
+        <h2><span class="tag-id">TRG-02</span> Signal triage <span class="sub">which VIIRS signals deserve action</span></h2>
         <div id="triage"></div>
       </section>
-      <section class="card">
-        <h2>Alarm history <span class="sub">week by week, newest year on top</span></h2>
+      <section class="card" id="section-history">
+        <h2><span class="tag-id">HIS-03</span> Alarm history <span class="sub">week by week, newest year on top</span></h2>
         <div id="calendar"></div>
       </section>
-      <section class="card">
-        <h2>Validation and method</h2>
+      <section class="card" id="section-validation">
+        <h2><span class="tag-id">VAL-05</span> Validation and method</h2>
         <div id="report"></div>
       </section>
     </section>
 
     <aside class="col col-right">
-      <section class="card">
-        <h2>Alerts <span class="count" id="alert-count"></span></h2>
+      <section class="card" id="section-alerts">
+        <h2><span class="tag-id">ALM-04</span> Alarm list</h2>
         <div id="alerts"></div>
       </section>
     </aside>
   </main>
 
   <footer class="footer">
-    Methods borrowed from industrial alarm management (seasonal baseline, hysteresis). PyroHistorian is not a control system.
+    <div class="footer-grid">
+      <div>
+        <h3>Data</h3>
+        <p>Active-fire detections from NASA FIRMS (MODIS and VIIRS), part of NASA Earth Science Data and Information System. Weekly counts per grid cell; MODIS is converted to the VIIRS scale using the years both sensors operated.</p>
+      </div>
+      <div>
+        <h3>Method</h3>
+        <p>Methods borrowed from industrial alarm management (seasonal baseline, hysteresis, quality codes). PyroHistorian is an analysis and decision-support view, not a control system.</p>
+      </div>
+      <div>
+        <h3>Transparency</h3>
+        <p>Built with AI assistance (Claude, Anthropic), reviewed and tested by the team. Created for the NASA Space Apps Challenge 2026; not affiliated with or endorsed by NASA.</p>
+      </div>
+    </div>
   </footer>
+
+  <div class="statusbar" aria-hidden="true">
+    <span><b>SRC</b> NASA FIRMS</span>
+    <span><b>SENSORS</b> MODIS ⇄ VIIRS</span>
+    <span><b>BASELINE</b> seasonal percentiles</span>
+    <span><b>QUALITY</b> G measured · U converted · B missing</span>
+    <span class="statusbar-right">ADVISORY · NOT A CONTROL SYSTEM</span>
+  </div>
+
+  <noscript><p class="noscript">PyroHistorian needs JavaScript to draw the map and the calendar.</p></noscript>
 
   <script type="module">
     import { start } from "./src/main.js";
