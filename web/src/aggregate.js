@@ -104,3 +104,10 @@ export function weeklySeries(cells, mode, meta, config) {
   }
   return series;
 }
+
+// Coverage of both sensors as week-index ranges {start, end} (only WHOLE weeks count, like in the pipeline).
+// Used by referee.js to know which weeks both sensors were watching.
+export function coverageRanges(meta, config) {
+  const W = config.time.weeks_per_year;
+  return { legacy: makeRange(meta.coverage.legacy, W), new: makeRange(meta.coverage.new, W) };
+}

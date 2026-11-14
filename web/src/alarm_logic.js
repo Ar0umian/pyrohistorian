@@ -71,7 +71,7 @@ export function classify(series, baseline, config) {
 }
 
 // All runs of consecutive Alarm weeks.
-function alarmRuns(states, config) {
+export function alarmRuns(states, config) {
   const W = config.time.weeks_per_year, alarmName = config.alarm.states[2];
   const runs = [];
   let run = null;

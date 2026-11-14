@@ -1,42 +1,54 @@
-// AI disclosure: written with help from Claude (Anthropic); reviewed by Owner B.
-// Year x week matrix. Grey = Normal; colours only for abnormal; hatched = converted (q = U).
-
-// Colour names in config.ui.state_colors -> CSS values (unknown names are used as-is).
-const CSS_COLORS = { grey: "#cfcfcf", amber: "#ffb300", red: "#d32f2f" };
+// AI disclosure: written with help from Claude (Anthropic); dark-theme version, must be reviewed by the team.
+// Year x week matrix, newest year on top. Grey = Normal; colours only for abnormal; hatched = converted (q = U).
+import { el, stateColor, qualityLabel } from "./ui.js";
 
 // states[year][week] = {value, low, high, q, state}
 export function render(container, series, states, config) {
   container.textContent = "";
-  const years = Object.keys(states).sort();
+  const years = Object.keys(states).sort().reverse();
   if (years.length === 0) { container.textContent = "No data for this area."; return; }
   const W = config.time.weeks_per_year;
-  const table = document.createElement("table");
-  table.style.borderCollapse = "collapse";
 
+  const wrap = el("div", null, "cal-wrap");
+  const table = el("table", null, "cal");
   const head = table.insertRow();
-  head.insertCell().textContent = "Year";
+  head.insertCell();
   for (let w = 1; w <= W; w++) {
-    const th = head.insertCell();
-    th.textContent = w % 4 === 1 ? w : "";
-    th.style.fontSize = "10px";
+    head.insertCell().textContent = w % 4 === 1 ? w : "";
   }
 
   years.forEach(function (y) {
     const row = table.insertRow();
-    row.insertCell().textContent = y;
+    const label = row.insertCell();
+    label.textContent = y;
+    label.className = "cal-year";
     for (let w = 1; w <= W; w++) {
       const td = row.insertCell();
-      td.style.cssText = "width:12px;height:14px;min-width:12px;border:1px solid #fff";
       const c = states[y][w];
-      if (!c) { td.style.background = "#f4f4f4"; td.title = y + " week " + w + ": missing"; continue; }
-      const colorName = config.ui.state_colors[c.state];
-      td.style.backgroundColor = CSS_COLORS[colorName] || colorName;
+      if (!c) { td.className = "cal-missing"; td.title = y + " week " + w + ": missing"; continue; }
+      td.style.backgroundColor = stateColor(config, c.state);
       if (c.q === "U") {                                  // hatched overlay for converted values
-        td.style.backgroundImage = "repeating-linear-gradient(45deg, rgba(0,0,0,0.45) 0 2px, transparent 2px 5px)";
+        td.style.backgroundImage = "repeating-linear-gradient(45deg, rgba(0,0,0,0.55) 0 2px, transparent 2px 5px)";
       }
-      const label = config.quality_codes[c.q] ? config.quality_codes[c.q].label : c.q;
-      td.title = y + " week " + w + ": " + c.value + " (low " + c.low + ", high " + c.high + ") - " + label + " - " + c.state;
+      td.title = y + " week " + w + ": " + Math.round(c.value * 10) / 10 + " (low " + Math.round(c.low * 10) / 10 +
+        ", high " + Math.round(c.high * 10) / 10 + ") - " + qualityLabel(config, c.q) + " - " + c.state;
     }
   });
-  container.appendChild(table);
+  wrap.appendChild(table);
+  container.appendChild(wrap);
+
+  // Legend
+  const legend = el("div", null, "legend");
+  function item(swatchStyle, text, extraClass) {
+    const span = el("span");
+    const sw = el("span", null, "swatch" + (extraClass ? " " + extraClass : ""));
+    if (swatchStyle) sw.style.background = swatchStyle;
+    span.appendChild(sw);
+    span.appendChild(document.createTextNode(text));
+    legend.appendChild(span);
+  }
+  config.alarm.states.forEach(function (s) { item(stateColor(config, s), s); });
+  item("#5b6475 repeating-linear-gradient(45deg, rgba(0,0,0,0.55) 0 2px, transparent 2px 5px)", "converted (uncertain)");
+  item(null, "missing", "swatch-missing");
+  container.appendChild(legend);
 }

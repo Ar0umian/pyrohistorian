@@ -1,12 +1,12 @@
-// AI disclosure: written with help from Claude (Anthropic); reviewed by Owner B.
+// AI disclosure: written with help from Claude (Anthropic); must be reviewed by the team.
 // Wires everything together.
 import { loadAll } from "./config_loader.js";
 import { initMap, getCellsInAoi } from "./map_aoi.js";
 import { weeklySeries } from "./aggregate.js";
-import { buildBaseline, classify, findCriticalPeriods, alarmKpis } from "./alarm_logic.js";
+import { buildBaseline, classify } from "./alarm_logic.js";
 import { render as renderCalendar } from "./calendar_view.js";
 import { render as renderReport } from "./report_view.js";
-import { render as renderAlarmPanel } from "./alarm_panel.js";
+import { render as renderAlerts } from "./alerts.js";
 
 export async function start() {
   let data;
@@ -14,25 +14,35 @@ export async function start() {
   const { config, meta, cells, validation } = data;
 
   const calendarEl = document.getElementById("calendar");
-  const kpiEl = document.getElementById("kpis");
-  const alarmEl = document.getElementById("alarm-panel");
+  const alertsEl = document.getElementById("alerts");
+  const countEl = document.getElementById("alert-count");
   let mode = config.ui.modes[0];
   let aoi = null;
 
+  const end = meta.coverage && meta.coverage.new && meta.coverage.new.end;
+  document.getElementById("data-badge").textContent = "Historical record" + (end ? " · data until " + end : "");
+
   // Recompute everything for the current area + mode, then redraw.
   function update() {
-    if (!aoi) { calendarEl.textContent = "Choose an area on the map to see the calendar and the alarm summary."; kpiEl.textContent = ""; alarmEl.textContent = ""; return; }
+    if (!aoi) {
+      calendarEl.textContent = "Choose an area on the map to see the alarm history.";
+      alertsEl.textContent = "Choose an area on the map to see the alerts.";
+      countEl.textContent = "";
+      return;
+    }
     const inAoi = getCellsInAoi(aoi, cells);
-    if (inAoi.length === 0) { calendarEl.textContent = "No cells inside this area."; kpiEl.textContent = ""; alarmEl.textContent = ""; return; }
+    if (inAoi.length === 0) {
+      calendarEl.textContent = "No cells inside this area.";
+      alertsEl.textContent = "No cells inside this area.";
+      countEl.textContent = "";
+      return;
+    }
     const series = weeklySeries(inAoi, mode, meta, config);
     const baseline = buildBaseline(series, config);
     const states = classify(series, baseline, config);
-    const periods = findCriticalPeriods(states, config);
-    const k = alarmKpis(states, periods, config);
     renderCalendar(calendarEl, series, states, config);
-    kpiEl.textContent = "";                       // the KPI tiles are now inside the alarm panel
-    renderAlarmPanel({ container: alarmEl, series: series, states: states, baseline: baseline,
-                       periods: periods, kpis: k, meta: meta, config: config });
+    renderAlerts({ container: alertsEl, countEl: countEl, series: series, states: states, baseline: baseline,
+                   config: config, meta: meta, onSelect: function () {} });
   }
 
   // Mode toggle buttons from config.ui.modes
