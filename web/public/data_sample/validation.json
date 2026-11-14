@@ -1,9 +1,1 @@
-{
-  "contract_version": 1,
-  "sample": true,
-  "rows": [
-    { "region_id": "region_1", "month": 7, "interval_coverage": 0.88, "mean_abs_error": 12.4, "n_cases": 8 },
-    { "region_id": "region_1", "month": 8, "interval_coverage": 0.75, "mean_abs_error": 15.1, "n_cases": 8 },
-    { "region_id": "region_1", "month": 9, "interval_coverage": 0.88, "mean_abs_error": 10.2, "n_cases": 8 }
-  ]
-}
+[{"region_id": "region_1", "month": 1, "interval_coverage": 0.92, "mean_abs_error": 1.94, "n_cases": 14}, {"region_id": "region_1", "month": 2, "interval_coverage": 0.92, "mean_abs_error": 2.37, "n_cases": 14}, {"region_id": "region_1", "month": 3, "interval_coverage": 0.74, "mean_abs_error": 1.01, "n_cases": 14}, {"region_id": "region_1", "month": 4, "interval_coverage": 0.93, "mean_abs_error": 2.39, "n_cases": 14}, {"region_id": "region_1", "month": 5, "interval_coverage": 0.8, "mean_abs_error": 2.81, "n_cases": 14}, {"region_id": "region_1", "month": 6, "interval_coverage": 0.74, "mean_abs_error": 0.76, "n_cases": 14}, {"region_id": "region_1", "month": 7, "interval_coverage": 0.82, "mean_abs_error": 0.89, "n_cases": 14}, {"region_id": "region_1", "month": 8, "interval_coverage": 0.81, "mean_abs_error": 2.11, "n_cases": 14}, {"region_id": "region_1", "month": 9, "interval_coverage": 0.93, "mean_abs_error": 2.88, "n_cases": 14}, {"region_id": "region_1", "month": 10, "interval_coverage": 0.89, "mean_abs_error": 1.87, "n_cases": 14}, {"region_id": "region_1", "month": 11, "interval_coverage": 0.76, "mean_abs_error": 1.18, "n_cases": 14}, {"region_id": "region_1", "month": 12, "interval_coverage": 0.94, "mean_abs_error": 1.22, "n_cases": 14}]
