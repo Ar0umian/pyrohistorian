@@ -25,6 +25,7 @@ A = data pipeline   |   B = web app   |   SHARED = change only by agreement, one
 | web/src/aggregate.js | B |
 | web/src/alarm_logic.js | B |
 | web/src/calendar_view.js | B |
+| web/src/alarm_panel.js | B |
 | web/src/report_view.js | B |
 | web/src/main.js | B |
 | docs/ICS_MAPPING.md | B |

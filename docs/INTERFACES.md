@@ -32,5 +32,6 @@
 | aggregate.js | weeklySeries | (cells, mode, meta) -> series |
 | alarm_logic.js | buildBaseline, classify, findCriticalPeriods, alarmKpis | series -> baseline -> states -> critical periods -> KPIs |
 | calendar_view.js | render | (container, series, states) -> draws the calendar |
+| alarm_panel.js | render | ({container, series, states, baseline, periods, kpis, meta, config}) -> draws status lamp, KPI tiles, weekly trend with alarm limits, alarm journal |
 | report_view.js | render | (container, validation, meta) -> draws the report |
 | main.js | start | wires all of the above |
