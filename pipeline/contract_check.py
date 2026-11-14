@@ -1,8 +1,7 @@
 # AI disclosure: This file was written with the help of Claude (Anthropic) and must be reviewed by the team.
 """Check the 3 JSON files against shared/project_config.json and docs/DATA_CONTRACT.md.
 Prints every problem (max 50 per kind) and returns exit code 1 if there is any problem, else 0.
-Usage:  python3 pipeline/contract_check.py            -> checks paths.web_data_dir (real data)
-        python3 pipeline/contract_check.py --sample   -> checks paths.web_sample_dir (B's fake data)"""
+Usage:  python3 pipeline/contract_check.py   -> checks paths.web_data_dir"""
 
 import json
 import re
@@ -245,6 +244,4 @@ def run(config=None, directory=None):
 
 
 if __name__ == "__main__":
-    config = load_config()
-    folder = config["paths"]["web_sample_dir"] if "--sample" in sys.argv else None
-    sys.exit(run(config, folder))
+    sys.exit(run())

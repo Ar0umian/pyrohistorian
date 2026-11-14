@@ -1,5 +1,5 @@
 {
-  "contract_version": 1,
+  "contract_version": 2,
   "project": "PyroHistorian",
 
   "regions": [
@@ -82,8 +82,7 @@
 
   "paths": {
     "interim_dir": "data/interim",
-    "web_data_dir": "web/public/data",
-    "web_sample_dir": "web/public/data_sample"
+    "web_data_dir": "web/public/data"
   },
 
   "files": {
@@ -103,8 +102,6 @@
       "fields": ["region_id", "month", "interval_coverage", "mean_abs_error", "n_cases"]
     }
   },
-
-  "web": { "use_sample_data": true },
 
   "ui": {
     "state_colors": { "Normal": "grey", "Elevated": "amber", "Alarm": "red" },

@@ -27,15 +27,10 @@
 ## Web (Owner B): all functions read settings from the config / meta.json
 | File | Functions | Input -> Output |
 |---|---|---|
-| config_loader.js | loadAll | -> { config, meta, cells, validation }; uses sample dir if web.use_sample_data is true; checks contract_version |
+| config_loader.js | loadAll | -> { config, meta, cells, validation }; reads the files from paths.web_data_dir; checks contract_version |
 | map_aoi.js | initMap, getCellsInAoi | callback on rectangle change; (aoi, cells) -> cells inside |
 | aggregate.js | weeklySeries | (cells, mode, meta) -> series |
 | alarm_logic.js | buildBaseline, classify, findCriticalPeriods, alarmKpis | series -> baseline -> states -> critical periods -> KPIs |
 | calendar_view.js | render | (container, series, states) -> draws the calendar |
 | report_view.js | render | (container, validation, meta) -> draws the report |
 | main.js | start | wires all of the above |
-
-## How B works without waiting for A
-B develops against web/public/data_sample/ (fake, tiny, valid contract). Set web.use_sample_data to true.
-When A's real files exist in web/public/data/, set it to false. B may ask the AI to generate a LARGER fake
-sample (still in data_sample/) to test the baseline logic.
