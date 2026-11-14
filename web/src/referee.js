@@ -267,3 +267,113 @@ export function tradeoffCurve(signals, policy) {
     return result;
   });
 }
+
+// ======================================================================
+// CREDIBILITY SCORE. For a signal with given VIIRS-only features (strength group, active neighbours,
+// continuity in time) the score is the share of such signals that MODIS ALSO saw, learned from the
+// history of the area. It uses VIIRS features only, so after the legacy sensor stops it can still be
+// computed (assumption to check: the relation stays stable over time).
+// looCredibility = leave-one-year-out: a signal is scored with statistics that do NOT include its own year.
+// ======================================================================
+
+const STRENGTH_GROUPS = [[1, 1], [2, 2], [3, 3], [4, 5], [6, 10], [11, 20], [21, Infinity]];
+const NEIGHBOUR_GROUPS = [[0, 0], [1, 2], [3, 5], [6, 8]];
+
+function groupOf(groups, v) {
+  for (let i = 0; i < groups.length; i++) { if (v >= groups[i][0] && v <= groups[i][1]) return i; }
+  return groups.length - 1;
+}
+
+function signalKey(s, f) {
+  let key = "";
+  if (f.strength) key += "s" + groupOf(STRENGTH_GROUPS, s.nw);
+  if (f.neighbours) key += "n" + groupOf(NEIGHBOUR_GROUPS, s.nb);
+  if (f.persistence) key += "p" + (s.persist ? 1 : 0);
+  return key;
+}
+
+// Small-sample smoothing, so a group with very few signals does not give 0% or 100%.
+function smooth(n, c) { return (c + 1) / (n + 2); }
+
+export const ALL_FEATURES = { strength: true, neighbours: true, persistence: true };
+
+// table: group key -> { n: signals, c: confirmed by MODIS }
+export function trainCredibility(signals, features) {
+  const f = features || ALL_FEATURES;
+  const table = new Map();
+  signals.forEach(function (s) {
+    const key = signalKey(s, f);
+    const e = table.get(key) || { n: 0, c: 0 };
+    e.n++;
+    if (s.confirmed) e.c++;
+    table.set(key, e);
+  });
+  return table;
+}
+
+// Score other signals with a trained table (for example later years, or years without MODIS).
+export function applyCredibility(signals, table, features) {
+  const f = features || ALL_FEATURES;
+  return signals.map(function (s) {
+    const e = table.get(signalKey(s, f));
+    return e ? smooth(e.n, e.c) : 0.5;
+  });
+}
+
+// Leave-one-year-out score of every signal (array in the same order as `signals`).
+export function looCredibility(signals, features) {
+  const f = features || ALL_FEATURES;
+  const total = trainCredibility(signals, f);
+  const perYear = new Map();
+  signals.forEach(function (s) {
+    const k = s.year + "|" + signalKey(s, f);
+    const e = perYear.get(k) || { n: 0, c: 0 };
+    e.n++;
+    if (s.confirmed) e.c++;
+    perYear.set(k, e);
+  });
+  return signals.map(function (s) {
+    const key = signalKey(s, f);
+    const t = total.get(key), y = perYear.get(s.year + "|" + key);
+    return smooth(t.n - y.n, t.c - y.c);
+  });
+}
+
+// Same numbers as evaluate(), for any keep rule: keepFn(signal, index) -> true if the signal stays on the emergency list.
+export function evaluateBy(signals, keepFn) {
+  let kept = 0, keptConfirmed = 0, totalConfirmed = 0;
+  signals.forEach(function (s, i) {
+    if (s.confirmed) totalConfirmed++;
+    if (keepFn(s, i)) { kept++; if (s.confirmed) keptConfirmed++; }
+  });
+  const total = signals.length, dropped = total - kept, droppedConfirmed = totalConfirmed - keptConfirmed;
+  return {
+    total: total, kept: kept, dropped: dropped,
+    totalConfirmed: totalConfirmed, keptConfirmed: keptConfirmed, droppedConfirmed: droppedConfirmed,
+    loadCut: total > 0 ? dropped / total : null,
+    keptConfirmShare: kept > 0 ? keptConfirmed / kept : null,
+    retained: totalConfirmed > 0 ? keptConfirmed / totalConfirmed : null,
+    droppedConfirmShare: dropped > 0 ? droppedConfirmed / dropped : null
+  };
+}
+
+// How well does a score separate MODIS-confirmed signals from the others?
+// 0.5 = no information, 1 = perfect. (Probability that a confirmed signal gets a higher score than an unconfirmed one.)
+export function auc(signals, scores) {
+  const groups = new Map();
+  let positives = 0, negatives = 0;
+  signals.forEach(function (s, i) {
+    const g = groups.get(scores[i]) || { pos: 0, neg: 0 };
+    if (s.confirmed) { g.pos++; positives++; } else { g.neg++; negatives++; }
+    groups.set(scores[i], g);
+  });
+  if (positives === 0 || negatives === 0) return null;
+  const keys = Array.from(groups.keys()).sort(function (a, b) { return a - b; });
+  let negBelow = 0, sum = 0;
+  keys.forEach(function (k) {
+    const g = groups.get(k);
+    sum += g.pos * negBelow + 0.5 * g.pos * g.neg;
+    negBelow += g.neg;
+  });
+  return sum / (positives * negatives);
+}
