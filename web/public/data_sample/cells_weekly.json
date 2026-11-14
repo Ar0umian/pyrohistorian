@@ -1,0 +1,28 @@
+{
+  "contract_version": 1,
+  "sample": true,
+  "value_fields": ["legacy", "new", "harmonized", "low", "high", "q"],
+  "absent_means": "zero detections if the week is inside meta.coverage for that sensor, otherwise missing",
+  "cells": [
+    {
+      "cell_id": "region_1_-14.875_+132.125", "region_id": "region_1", "lat": -14.875, "lon": 132.125,
+      "data": {
+        "2010_28": [5.0, null, 18.0, 14.5, 22.0, "U"],
+        "2010_30": [8.0, null, 28.8, 23.2, 35.2, "U"],
+        "2010_32": [12.0, null, 43.2, 34.8, 52.8, "U"],
+        "2014_28": [6.0, 24.0, 24.0, 24.0, 24.0, "G"],
+        "2014_30": [9.0, 33.0, 33.0, 33.0, 33.0, "G"],
+        "2014_32": [14.0, 52.0, 52.0, 52.0, 52.0, "G"],
+        "2020_30": [20.0, 75.0, 75.0, 75.0, 75.0, "G"]
+      }
+    },
+    {
+      "cell_id": "region_1_-14.625_+132.375", "region_id": "region_1", "lat": -14.625, "lon": 132.375,
+      "data": {
+        "2010_30": [2.0, null, 7.2, 5.8, 8.8, "U"],
+        "2014_30": [3.0, 11.0, 11.0, 11.0, 11.0, "G"],
+        "2020_30": [null, null, null, null, null, "B"]
+      }
+    }
+  ]
+}

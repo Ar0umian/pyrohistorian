@@ -1,0 +1,9 @@
+{
+  "contract_version": 1,
+  "sample": true,
+  "rows": [
+    { "region_id": "region_1", "month": 7, "interval_coverage": 0.88, "mean_abs_error": 12.4, "n_cases": 8 },
+    { "region_id": "region_1", "month": 8, "interval_coverage": 0.75, "mean_abs_error": 15.1, "n_cases": 8 },
+    { "region_id": "region_1", "month": 9, "interval_coverage": 0.88, "mean_abs_error": 10.2, "n_cases": 8 }
+  ]
+}

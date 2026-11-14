@@ -1,0 +1,29 @@
+{
+  "contract_version": 1,
+  "project": "PyroHistorian",
+  "sample": true,
+  "note": "FAKE numbers for UI development only. Never show these as results.",
+  "regions": [ { "id": "region_1", "name": "Sample region", "bbox": { "south": -20.0, "west": 130.0, "north": -10.0, "east": 140.0 } } ],
+  "grid": { "step_deg": 0.25 },
+  "time": { "first_year": 2000, "last_year": 2026, "overlap_start_year": 2012, "weeks_per_year": 52,
+            "week_rule": "week = min(52, (day_of_year - 1) // 7 + 1)", "data_first_year": 2010, "data_last_year": 2020 },
+  "units": { "metric": "detections_per_week" },
+  "coverage": { "legacy": { "start": "2002-07-04", "end": "2020-12-31" }, "new": { "start": "2012-01-20", "end": "2020-12-31" } },
+  "absent_means": "zero detections if the week is inside meta.coverage for that sensor, otherwise missing",
+  "quality_codes": {
+    "G": { "label": "Measured", "meaning": "new-sensor (VIIRS) count" },
+    "U": { "label": "Converted", "meaning": "legacy-sensor (MODIS) count converted with uncertainty" },
+    "B": { "label": "Missing", "meaning": "no valid value (week outside sensor coverage)" }
+  },
+  "alarm": { "states": ["Normal", "Elevated", "Alarm"], "elevated_percentile": 90, "alarm_percentile": 97.5,
+             "min_abs_weekly_count": 5, "hysteresis_weeks": 1, "critical_min_weeks": 2 },
+  "ui": { "state_colors": { "Normal": "grey", "Elevated": "amber", "Alarm": "red" }, "uncertain_pattern": "hatched",
+          "modes": ["legacy_only", "harmonized"] },
+  "validation_method": "leave_one_year_out",
+  "conversion": [
+    { "region_id": "region_1", "month": 7, "median": 3.6, "low": 2.9, "high": 4.4, "n_years": 8 },
+    { "region_id": "region_1", "month": 8, "median": 3.6, "low": 2.9, "high": 4.4, "n_years": 8 },
+    { "region_id": "region_1", "month": 9, "median": 3.6, "low": 2.9, "high": 4.4, "n_years": 8 }
+  ],
+  "acknowledgement": "We acknowledge the use of data and/or imagery from NASA's Fire Information for Resource Management System (FIRMS) (https://earthdata.nasa.gov/firms), part of NASA's Earth Science Data and Information System (ESDIS)."
+}

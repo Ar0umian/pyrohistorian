@@ -1,0 +1,114 @@
+{
+  "contract_version": 1,
+  "project": "PyroHistorian",
+
+  "regions": [
+    {
+      "id": "region_1",
+      "name": "CHANGE_ME",
+      "bbox": { "south": -20.0, "west": 130.0, "north": -10.0, "east": 140.0 }
+    }
+  ],
+
+  "grid": { "step_deg": 0.25 },
+
+  "time": {
+    "first_year": 2000,
+    "last_year": 2026,
+    "overlap_start_year": 2012,
+    "weeks_per_year": 52,
+    "week_rule": "week = min(52, (day_of_year - 1) // 7 + 1)"
+  },
+
+  "units": { "metric": "detections_per_week" },
+
+  "input": {
+    "root": "data/raw",
+    "nrt_policy": "only_after_archive_end",
+    "products": {
+      "modis": {
+        "folder": "DL_FIRE_M-C61_817682",
+        "archive": "fire_archive_M-C61_817682.json",
+        "nrt": "fire_nrt_M-C61_817682.json",
+        "sensor": "MODIS",
+        "role": "legacy"
+      },
+      "viirs_snpp": {
+        "folder": "DL_FIRE_SV-C2_817684",
+        "archive": "fire_archive_SV-C2_817684.json",
+        "nrt": "fire_nrt_SV-C2_817684.json",
+        "sensor": "VIIRS",
+        "role": "new"
+      },
+      "viirs_noaa20": {
+        "folder": "DL_FIRE_J1V-C2_817683",
+        "archive": "fire_archive_J1V-C2_817683.json",
+        "nrt": "fire_nrt_J1V-C2_817683.json",
+        "sensor": "VIIRS",
+        "role": "reserve"
+      }
+    }
+  },
+
+  "filters": {
+    "keep_fire_types": [0],
+    "min_modis_confidence": 30,
+    "viirs_confidence_keep": ["n", "nominal", "h", "high"]
+  },
+
+  "sensors": {
+    "legacy": { "product": "modis", "name": "MODIS", "satellites": ["AQUA"], "operating_start": "2002-07-04", "operating_end": null },
+    "new":    { "product": "viirs_snpp", "name": "VIIRS", "satellites": [], "operating_start": "2012-01-20", "operating_end": null }
+  },
+
+  "conversion": { "min_overlap_years": 5, "min_legacy_total_count": 10 },
+
+  "validation": { "method": "leave_one_year_out" },
+
+  "quality_codes": {
+    "G": { "label": "Measured", "meaning": "new-sensor (VIIRS) count" },
+    "U": { "label": "Converted", "meaning": "legacy-sensor (MODIS) count converted with uncertainty" },
+    "B": { "label": "Missing", "meaning": "no valid value (week outside sensor coverage)" }
+  },
+
+  "alarm": {
+    "states": ["Normal", "Elevated", "Alarm"],
+    "elevated_percentile": 90,
+    "alarm_percentile": 97.5,
+    "min_abs_weekly_count": 5,
+    "hysteresis_weeks": 1,
+    "critical_min_weeks": 2
+  },
+
+  "paths": {
+    "interim_dir": "data/interim",
+    "web_data_dir": "web/public/data",
+    "web_sample_dir": "web/public/data_sample"
+  },
+
+  "files": {
+    "meta": "meta.json",
+    "cells": "cells_weekly.json",
+    "validation": "validation.json"
+  },
+
+  "schema": {
+    "cells_weekly": {
+      "cell_fields": ["cell_id", "region_id", "lat", "lon", "data"],
+      "data_key": "year_week",
+      "value_fields": ["legacy", "new", "harmonized", "low", "high", "q"],
+      "absent_means": "zero detections if the week is inside meta.coverage for that sensor, otherwise missing"
+    },
+    "validation": {
+      "fields": ["region_id", "month", "interval_coverage", "mean_abs_error", "n_cases"]
+    }
+  },
+
+  "web": { "use_sample_data": true },
+
+  "ui": {
+    "state_colors": { "Normal": "grey", "Elevated": "amber", "Alarm": "red" },
+    "uncertain_pattern": "hatched",
+    "modes": ["legacy_only", "harmonized"]
+  }
+}
