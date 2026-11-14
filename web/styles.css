@@ -14,3 +14,4 @@ section { margin-bottom: 16px; }
 #report table { border-collapse: collapse; margin-bottom: 8px; }
 #report th, #report td { border: 1px solid #ddd; padding: 4px 8px; text-align: left; }
 #report th { background: #f1f3f4; }
+#alarm-panel { margin: 8px 0; max-width: 100%; overflow-x: auto; }

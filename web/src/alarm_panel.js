@@ -3,6 +3,8 @@
 // alarm limits, alarm journal. The methods are BORROWED from industrial alarm management.
 // This is NOT a control system, and the data are historical.
 
+import { buildBaseline, classify, findCriticalPeriods, alarmKpis } from "./alarm_logic.js";
+
 // Colour names in config.ui.state_colors -> CSS values (unknown names are used as-is).
 const CSS_COLORS = { grey: "#cfcfcf", amber: "#ffb300", red: "#d32f2f" };
 const SVG_NS = "http://www.w3.org/2000/svg";
@@ -379,4 +381,15 @@ export function render(options) {
   panel.appendChild(buildHelp(config));
   container.appendChild(panel);
   show(latest.year, null);
+}
+
+// One call for main.js: computes baseline, states, critical periods and KPIs from the weekly
+// series (alarm_logic.js), then draws the panel.
+export function renderFromSeries(container, series, meta, config) {
+  const baseline = buildBaseline(series, config);
+  const states = classify(series, baseline, config);
+  const periods = findCriticalPeriods(states, config);
+  const kpis = alarmKpis(states, periods, config);
+  render({ container: container, series: series, states: states, baseline: baseline,
+           periods: periods, kpis: kpis, meta: meta, config: config });
 }
