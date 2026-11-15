@@ -32,6 +32,9 @@
 | aggregate.js | weeklySeries | (cells, mode, meta) -> series |
 | alarm_logic.js | buildBaseline, classify, findCriticalPeriods, alarmKpis | series -> baseline -> states -> critical periods -> KPIs |
 | calendar_view.js | render | (container, series, states) -> draws the calendar |
-| alarm_panel.js | render | ({container, series, states, baseline, periods, kpis, meta, config}) -> draws status lamp, KPI tiles, weekly trend with alarm limits, alarm journal |
+| ui.js | el, svgEl, fmt, weekLabel, monthName, median, stateColor, idxToYearWeek | small shared helpers for the views |
+| alerts.js | render | ({container, countEl, series, states, baseline, signals, minStrength, config, meta, onSelect}) -> alarm episode cards with a triage line; returns {setMinStrength} |
+| referee.js | buildEvidence, buildSignals, evaluate, sensorProfile (and experiments: judge, triage, looCredibility, auc) | cells -> evidence of both sensors -> VIIRS signals -> triage numbers (pure logic, no drawing) |
+| triage_console.js | render, clear, getMinStrength | ({container, map, signals, evidence, config, onChange}) -> interactive signal triage: strength slider, trade-off curve, sensor trust, week inspector on the map |
 | report_view.js | render | (container, validation, meta) -> draws the report |
 | main.js | start | wires all of the above |
