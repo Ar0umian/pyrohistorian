@@ -14,6 +14,12 @@ into one burning-activity calendar with an honest uncertainty range, and (2) let
 ones, using the other sensor as an independent check. It runs in the browser on three small JSON files, and everything comes from
 NASA FIRMS data.
 
+## UI Preview
+
+Here is a quick look at the **PyroHistorian** application interface:
+
+![Project Interface](submission/Screenshot%202026-11-15%20at%204.52.58%20PM.png)
+
 ## What it does
 
 1. **Harmonized calendar.** MODIS counts are converted to the VIIRS scale with a monthly ratio learned from the overlap years
