@@ -16,9 +16,7 @@ NASA FIRMS data.
 
 ## UI Preview
 
-Here is a quick look at the **PyroHistorian** application interface:
-
-![Project Interface](submission/Screenshot 2026-11-15 at 4.52.58 PM.png)
+![UI Preview](submission/ui-preview.png)
 
 ## What it does
 
