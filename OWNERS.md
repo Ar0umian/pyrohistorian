@@ -22,6 +22,8 @@ A = data pipeline   |   B = web app   |   SHARED = change only by agreement, one
 | web/styles.css | B |
 | web/src/config_loader.js | B |
 | web/src/map_aoi.js | B |
+| web/src/map_layer.js | B |
+| web/src/map_picker.js | B |
 | web/src/aggregate.js | B |
 | web/src/alarm_logic.js | B |
 | web/src/calendar_view.js | B |

@@ -12,7 +12,7 @@ Tick each item only after you checked it yourself.
 
 ## Run test (a fresh copy, as the judges will see it)
 - [ ] `git clone <repo url> /tmp/pyro_test` then `cd /tmp/pyro_test && python3 -m http.server 8002`
-- [ ] http://localhost:8002/web/index.html opens, the map shows, a drawn area gives the triage, the calendar and the alarm cards
+- [ ] http://localhost:8002/web/index.html opens, the map shows, a selected area gives the triage, the calendar and the alarm cards
 - [ ] No red error box on the page and no red errors in the browser console
 - [ ] If the page is published online (for example GitHub Pages), the same test works from that link
 - [ ] With the internet turned off, the page still opens and the analysis works (only the map tiles are missing)

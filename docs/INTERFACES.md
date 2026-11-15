@@ -29,6 +29,8 @@
 |---|---|---|
 | config_loader.js | loadAll | -> { config, meta, cells, validation }; reads the files from paths.web_data_dir; checks contract_version |
 | map_aoi.js | initMap, getCellsInAoi | callback on rectangle change; (aoi, cells) -> cells inside |
+| map_layer.js | cellTotals, drawDataLayer, findBusiestArea | (map, cells, config) -> shades the cells that have NASA data (brightness by rank) and draws the legend |
+| map_picker.js | enablePicker | ({map, cells, config, container}) -> click-to-select window with a live preview of the cells with data, a readout, size buttons and two quick buttons |
 | aggregate.js | weeklySeries | (cells, mode, meta) -> series |
 | alarm_logic.js | buildBaseline, classify, findCriticalPeriods, alarmKpis | series -> baseline -> states -> critical periods -> KPIs |
 | calendar_view.js | render | (container, series, states) -> draws the calendar |

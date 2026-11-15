@@ -17,7 +17,7 @@ the script, the script is wrong: fix the script.
 | 4:00 to 4:40 | Slide 6: the price, the negative result and the limits |
 | 4:40 to 5:00 | Slide 7: next steps and thanks |
 
-For 10 minutes: spend the extra time on the live demo (draw a second, smaller area and show it recomputes) and on slide 6.
+For 10 minutes: spend the extra time on the live demo (pick a second, smaller area and show it recomputes) and on slide 6.
 For 3 minutes: slides 1, 2, 5, a 60-second demo (only the slider and the week inspector), slide 6 limits in one sentence.
 
 ## Slides (7 plus backup)
@@ -71,8 +71,8 @@ Before you start (do this before the session):
 4. Rehearse once and remember where the slider and the "Busiest week" button are.
 
 Steps:
-1. **Draw the area** (10 seconds). Click two opposite corners inside the dashed box, covering most of it.
-   Say: "We draw an area. Everything is computed in the browser, for these cells."
+1. **Pick the area** (10 seconds). Move the pointer over the bright part of the map, choose 3 degrees, and click.
+   Say: "We pick an area. Everything is computed in the browser, for these cells."
 2. **Trust bars** (15 seconds). Point at the bars under the curve.
    Say: "This is the finding from the slide, for this area."
 3. **The slider** (40 seconds). Move it slowly from 1 to 5, pause, then to 10, then back to 5. Read the numbers as they appear on screen.

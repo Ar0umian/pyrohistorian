@@ -18,7 +18,7 @@ NASA FIRMS data.
 
 1. **Harmonized calendar.** MODIS counts are converted to the VIIRS scale with a monthly ratio learned from the overlap years
    (2012 onward), with a low to high range. Every cell-week has a quality code: `G` measured, `U` converted, `B` missing.
-2. **Alarms.** For any area drawn on the map, a seasonal baseline (percentiles of the same week in the other years), a minimum
+2. **Alarms.** For any area chosen on the map, a seasonal baseline (percentiles of the same week in the other years), a minimum
    count and hysteresis give Normal / Elevated / Alarm states and critical periods. These are methods borrowed from industrial
    alarm management, not a control system.
 3. **Signal triage (the interactive part).** The user chooses how strong a VIIRS signal must be to reach the emergency list. The
@@ -59,7 +59,7 @@ the evaluation script).
 
     python3 -m http.server 8000
 
-Then open http://localhost:8000/web/index.html and click two opposite corners inside the dashed box on the map.
+Then open http://localhost:8000/web/index.html and move the pointer over the map (the squares that a click would select light up and a readout says how much data is there), choose the area size (1, 2, 3 or 5 degrees) and click.
 Run the command from the project root, not from the `web` folder.
 
 **The whole pipeline** (needs the raw FIRMS files, see [`docs/DATA_SOURCES.md`](docs/DATA_SOURCES.md)):

@@ -61,7 +61,7 @@ area's own history", not a forecast and not a live warning.
 
 ## 4. The selected area
 
-The user draws a rectangle on the map. Weekly totals, baseline and alarms are recomputed for the cells whose centre is inside it.
+The user picks a square window on the map (1, 2, 3 or 5 degrees on a side). Moving the pointer lights up the cells with data that a click would select. Weekly totals, baseline and alarms are recomputed for the cells whose centre is inside the window.
 
 ## 5. The calendar
 
