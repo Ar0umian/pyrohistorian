@@ -8,7 +8,7 @@ import { buildEvidence, buildSignals } from "./referee.js";
 import { render as renderCalendar } from "./calendar_view.js";
 import { render as renderReport } from "./report_view.js";
 import { render as renderAlerts } from "./alerts.js";
-import { render as renderTriage, clear as clearTriage } from "./triage_console.js";
+import { render as renderTriage, clear as clearTriage, getMinStrength } from "./triage_console.js";
 
 export async function start() {
   let data;
@@ -19,9 +19,11 @@ export async function start() {
   const alertsEl = document.getElementById("alerts");
   const countEl = document.getElementById("alert-count");
   const triageEl = document.getElementById("triage");
-  let mode = config.ui.modes[0];
+  // Alarms and the calendar always use the harmonized series: that is the one the triage is about.
+  const mode = config.ui.modes.indexOf("harmonized") >= 0 ? "harmonized" : config.ui.modes[config.ui.modes.length - 1];
   let aoi = null;
   let map = null;
+  let alerts = null;                                           // controller of the alarm cards
   let cache = { key: null, evidence: null, signals: null };   // evidence and signals only change with the area
 
   const end = meta.coverage && meta.coverage.new && meta.coverage.new.end;
@@ -35,8 +37,9 @@ export async function start() {
     clearTriage(map);
   }
 
-  // Recompute everything for the current area + mode, then redraw.
+  // Recompute everything for the current area, then redraw.
   function update() {
+    alerts = null;
     if (!aoi) { showMessage("Choose an area on the map first."); return; }
     const inAoi = getCellsInAoi(aoi, cells);
     if (inAoi.length === 0) { showMessage("No cells inside this area."); return; }
@@ -50,25 +53,16 @@ export async function start() {
     const series = weeklySeries(inAoi, mode, meta, config);
     const baseline = buildBaseline(series, config);
     const states = classify(series, baseline, config);
-    renderTriage({ container: triageEl, map: map, signals: cache.signals, evidence: cache.evidence, config: config });
-    renderCalendar(calendarEl, series, states, config);
-    renderAlerts({ container: alertsEl, countEl: countEl, series: series, states: states, baseline: baseline,
-                   config: config, meta: meta, onSelect: function () {} });
-  }
-
-  // Mode toggle buttons from config.ui.modes
-  const toggle = document.getElementById("mode-toggle");
-  config.ui.modes.forEach(function (m) {
-    const b = document.createElement("button");
-    b.textContent = m;
-    b.setAttribute("aria-pressed", String(m === mode));
-    b.addEventListener("click", function () {
-      mode = m;
-      Array.from(toggle.children).forEach(function (x) { x.setAttribute("aria-pressed", String(x === b)); });
-      update();
+    renderTriage({
+      container: triageEl, map: map, signals: cache.signals, evidence: cache.evidence, config: config,
+      onChange: function (t) { if (alerts) alerts.setMinStrength(t); }
     });
-    toggle.appendChild(b);
-  });
+    renderCalendar(calendarEl, series, states, config);
+    alerts = renderAlerts({
+      container: alertsEl, countEl: countEl, series: series, states: states, baseline: baseline,
+      signals: cache.signals, minStrength: getMinStrength(), config: config, meta: meta, onSelect: function () {}
+    });
+  }
 
   map = initMap(config, function (newAoi) { aoi = newAoi; update(); });
   renderReport(document.getElementById("report"), validation, meta, config);

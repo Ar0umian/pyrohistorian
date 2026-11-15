@@ -28,6 +28,9 @@ let layer = null;                          // the week layer on the map
 function pct(x) { return x === null ? "-" : Math.round(x * 100) + "%"; }
 function policyOf(t) { return { minStrength: t, minNeighbours: 0, keepPersistent: false }; }
 
+// The strength threshold chosen with the slider (stays when the area changes).
+export function getMinStrength() { return minStrength; }
+
 // Remove the week layer from the map (used when the area changes).
 export function clear(map) {
   if (layer && map) map.removeLayer(layer);
@@ -254,6 +257,7 @@ export function render(options) {
       "The signals taken off the list are low priority, not necessarily false: " + pct(e.droppedConfirmShare) + " of them were seen by MODIS.";
     chart.setMarker(e);
     drawWeek();
+    if (options.onChange) options.onChange(minStrength);
   }
 
   slider.oninput = function () { minStrength = Number(slider.value); updatePolicy(); };

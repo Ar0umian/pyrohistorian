@@ -100,6 +100,19 @@ function checksList(ep, ctx) {
   return box;
 }
 
+// One line about the VIIRS signals inside the weeks of an alarm, for the current strength threshold.
+function triageText(ep, minStrength) {
+  if (ep.signals.length === 0) return "Before VIIRS (single sensor): no signal triage for this alarm.";
+  let kept = 0, keptSeen = 0;
+  ep.signals.forEach(function (s) {
+    if (s.nw >= minStrength) { kept++; if (s.confirmed) keptSeen++; }
+  });
+  let text = "VIIRS signals in these weeks: " + ep.signals.length.toLocaleString() + " | " + kept.toLocaleString() +
+    " on the emergency list at " + minStrength + "+ detections";
+  if (kept > 0) text += " (" + Math.round((100 * keptSeen) / kept) + "% also seen by MODIS)";
+  return text;
+}
+
 function buildCard(ep, ctx, onPick) {
   const r = ep.run;
   const card = el("details", null, "alert-card " + (ep.critical ? "sev-critical" : "sev-alarm"));
@@ -113,6 +126,9 @@ function buildCard(ep, ctx, onPick) {
   summary.appendChild(top);
   summary.appendChild(el("div", ep.critical ? "Sustained alarm-level burning activity" : "Short alarm-level burning activity", "alert-title"));
   summary.appendChild(el("div", ep.weeks + " week(s) | peak " + fmt(ep.peak) + " detections/week", "alert-sub"));
+  const triageLine = el("div", triageText(ep, ctx.minStrength), "alert-triage");
+  summary.appendChild(triageLine);
+  ep.triageLine = triageLine;
   card.appendChild(summary);
 
   const body = el("div", null, "alert-body");
@@ -151,6 +167,29 @@ export function render(options) {
     return ep;
   });
   ctx.totalEpisodes = episodes.length;
+  ctx.minStrength = options.minStrength || 5;
+
+  // The VIIRS signals that fall inside the weeks of each alarm (signals come from referee.js buildSignals).
+  const signalsByIdx = new Map();
+  (options.signals || []).forEach(function (s) {
+    let list = signalsByIdx.get(s.idx);
+    if (!list) { list = []; signalsByIdx.set(s.idx, list); }
+    list.push(s);
+  });
+  episodes.forEach(function (ep) {
+    ep.signals = [];
+    for (let idx = ep.run.startIdx; idx <= ep.run.endIdx; idx++) {
+      const list = signalsByIdx.get(idx);
+      if (list) Array.prototype.push.apply(ep.signals, list);
+    }
+  });
+  // Called when the strength slider moves: updates the triage line of every card in place.
+  const controller = {
+    setMinStrength: function (t) {
+      ctx.minStrength = t;
+      episodes.forEach(function (ep) { if (ep.triageLine) ep.triageLine.textContent = triageText(ep, t); });
+    }
+  };
   const byPeak = episodes.slice().sort(function (a, b) { return b.peak - a.peak; });
   episodes.forEach(function (ep) { ep.rank = byPeak.indexOf(ep) + 1; });
 
@@ -177,7 +216,7 @@ export function render(options) {
   if (episodes.length === 0) {
     container.appendChild(el("p", "No alarm in this area: the weekly totals stayed below the " + config.alarm.states[2] +
       " limit (or below the minimum of " + config.alarm.min_abs_weekly_count + " detections per week).", "empty"));
-    return;
+    return controller;
   }
 
   // Cards, newest first
@@ -209,4 +248,5 @@ export function render(options) {
     }
   }
   draw();
+  return controller;
 }
