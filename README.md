@@ -121,5 +121,5 @@ This project is licensed under the **Apache License 2.0** - see the [LICENSE](LI
 ## Links
 
 - **Demo:** [https://ar0umian.github.io/pyrohistorian/](https://ar0umian.github.io/pyrohistorian/)
-- **Presentation:** [Download Slides (.pptx)](PyroHistorian_Presentation.pptx)
+- **Presentation:** [Download Slides (.pptx)](https://raw.githubusercontent.com/Ar0umian/pyrohistorian/main/submission/PyroHistorian%20Presentation.pptx)
 
