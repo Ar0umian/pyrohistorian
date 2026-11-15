@@ -370,3 +370,14 @@ body {
 .map-legend-title { color: var(--text); font-weight: 600; letter-spacing: 0.04em; }
 .map-legend-bar { height: 8px; margin: 4px 0 2px; border: 1px solid var(--line-strong); background: linear-gradient(90deg, rgba(52, 199, 214, 0.15), rgba(52, 199, 214, 0.85)); }
 .map-legend-scale { display: flex; justify-content: space-between; color: var(--muted); }
+
+/* Map: choose an area by clicking */
+#map.leaflet-container, #map.leaflet-grab { cursor: crosshair; }
+.map-readout { max-width: 210px; padding: 6px 8px; background: rgba(12, 15, 17, 0.9); border: 1px solid var(--line-strong); border-radius: 2px; color: var(--text); font-family: var(--font-mono); font-size: 10.5px; line-height: 1.45; }
+.map-legend-key { margin-top: 3px; }
+.map-legend-swatch { display: inline-block; width: 10px; height: 10px; margin-right: 5px; border: 2px solid #ffffff; background: rgba(255, 255, 255, 0.45); vertical-align: middle; }
+.aoi-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0 0 10px; }
+.aoi-label { color: var(--muted); font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; }
+.size-group { display: inline-flex; }
+.size-group .btn { border-radius: 0; margin-left: -1px; }
+.btn[aria-pressed="true"] { border-color: var(--teal); color: var(--teal); background: rgba(52, 199, 214, 0.14); }
