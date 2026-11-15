@@ -30,13 +30,13 @@ function need(obj, keys, where) {
 
 export async function loadAll() {
   try {
-    const config = await getJson("/shared/project_config.json");
+    const config = await getJson("../shared/project_config.json");
     need(config, ["contract_version", "time", "regions", "paths", "files", "schema", "alarm", "ui", "quality_codes"], "project_config.json");
     need(config.paths, ["web_data_dir"], "config.paths");
     need(config.files, ["meta", "cells", "validation"], "config.files");
 
     // The real files written by Owner A (pipeline/run_all.py).
-    const base = "/" + config.paths.web_data_dir + "/";
+    const base = "../" + config.paths.web_data_dir + "/";   // relative to web/index.html, so it also works from a sub-folder URL
     const meta = await getJson(base + config.files.meta);
     const cellsRaw = await getJson(base + config.files.cells);
     const valRaw = await getJson(base + config.files.validation);
