@@ -116,5 +116,5 @@ TODO: choose a license (for example MIT or Apache-2.0) and add a `LICENSE` file.
 
 ## Links
 
-- Video: TODO
+- Presentation: TODO (slides)
 - Project page / submission: TODO

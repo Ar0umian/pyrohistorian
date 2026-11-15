@@ -36,7 +36,7 @@ A = data pipeline   |   B = web app   |   SHARED = change only by agreement, one
 | shared/project_config.json | SHARED (commit message starts with "CONTRACT:") |
 | docs/DATA_CONTRACT.md, docs/INTERFACES.md, docs/CONTEXT.md | SHARED |
 | README.md, requirements.txt, .gitignore, .gitattributes | SHARED |
-| docs/VIDEO_SCRIPT.md, docs/SUBMISSION_TEXT.md, submission/CHECKLIST.md | SHARED (one person at a time) |
+| docs/PRESENTATION.md, docs/SUBMISSION_TEXT.md, submission/CHECKLIST.md | SHARED (one person at a time) |
 | docs/DEVLOG.md | each person appends only her own lines |
 
 Before every commit run `git status`: only files you own may appear.
