@@ -1,4 +1,4 @@
-# Data contract (version 2). Source of truth: shared/project_config.json
+# Data contract (version 3). Source of truth: shared/project_config.json
 Output files in paths.web_data_dir, written by pipeline (A), read by the web app (B):
 - meta.json: contract_version, project, regions, grid, time, units, sensors, filters, coverage {legacy,new}{start,end},
   absent_means, quality_codes, alarm, ui, validation_method, conversion [{region_id, month, median, low, high, n_years}],
@@ -9,3 +9,4 @@ Output files in paths.web_data_dir, written by pipeline (A), read by the web app
 - validation.json: {contract_version, rows:[{region_id, month, interval_coverage, mean_abs_error, n_cases}]}
 Changing anything here or in the config: bump contract_version, commit with "CONTRACT:", tell the other person.
 Version 2: the fake sample data was removed (no data_sample folder, no web.use_sample_data); the web app reads only the real files from paths.web_data_dir.
+Version 3: the region has a real name in the config (no change in the file shapes).

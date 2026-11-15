@@ -42,7 +42,7 @@ All settings are read from `shared/project_config.json`. The web app only reads 
    *How to read it:* with 14 to 15 years, a min to max range is expected to contain the left-out year about
    (n - 1) / (n + 1), around 87%, of the time. So 86% is what the method should give, not proof of a good model. The range is
    a min to max range, not a statistical confidence interval, and it is wide in some months.
-8. **Export and contract check.** Writes `meta.json`, `cells_weekly.json` and `validation.json` (contract version 2,
+8. **Export and contract check.** Writes `meta.json`, `cells_weekly.json` and `validation.json` (contract version 3,
    see `DATA_CONTRACT.md`) and checks them against the config.
 
 ## 3. Alarms on the harmonized series (`web/src/alarm_logic.js`)

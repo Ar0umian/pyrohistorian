@@ -1,10 +1,10 @@
 {
-  "contract_version": 2,
+  "contract_version": 3,
   "project": "PyroHistorian",
   "regions": [
     {
       "id": "region_1",
-      "name": "CHANGE_ME",
+      "name": "Northern Australia (10 x 10 degrees)",
       "bbox": {
         "south": -20.0,
         "west": 130.0,
