@@ -358,3 +358,9 @@ body {
 
 /* map without tiles (offline): the cells still draw on a plain background */
 #map { background: #1b2331; }
+
+/* Keep the area card in view while the page scrolls. The grid uses align-items: start, so the left column was only as
+   tall as its card and the card had no room to move. Stretching the column gives the sticky card the whole row. */
+.col-left { align-self: stretch; }
+.col-left .card { max-height: calc(100vh - var(--stick) - var(--status-h) - 12px); overflow-y: auto; }
+@media (max-width: 980px) { .col-left .card { max-height: none; overflow: visible; } }
