@@ -106,15 +106,16 @@ We acknowledge the use of data and/or imagery from NASA's Fire Information for R
 The map uses Leaflet (BSD-2-Clause license, a copy is in `web/vendor/leaflet`) and OpenStreetMap tiles (c) OpenStreetMap contributors.
 
 ## Team
-
-- Aram Al-Jahdali: data pipeline, alarm logic, signal triage, documentation
-- TODO: add the other team member(s) and their roles
+- **Aram Al-Jahdali**: Data pipeline, conversion models, validation, backend processing scripts, alarm logic, and signal triage.
+- **Shyhanah Shaman**: Web application architecture, interactive maps, UI components, frontend views, and triage console implementation.
 
 ## License
 
-TODO: choose a license (for example MIT or Apache-2.0) and add a `LICENSE` file.
+This project is licensed under the **Apache License 2.0** - see the [LICENSE](LICENSE) file for details.
+
 
 ## Links
 
-- Presentation: TODO (slides)
-- Project page / submission: TODO
+- **Demo:** [https://ar0umian.github.io/pyrohistorian/](https://ar0umian.github.io/pyrohistorian/)
+- **Presentation:** [Download Slides (.pptx)](PyroHistorian_Presentation.pptx)
+
