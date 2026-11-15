@@ -23,7 +23,7 @@ export function initMap(config, onChange) {
   L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", { attribution: "&copy; OpenStreetMap contributors" }).addTo(map);
   L.rectangle(bounds, { color: "#555", weight: 1, fill: false, dashArray: "4" }).addTo(map); // region limit
   map.fitBounds(bounds);
-  say("Click two opposite corners inside the dashed box to choose an area.");
+  say("Click two opposite corners to choose an area. Bright squares show where fire detections were recorded; where there is no square, nothing was recorded.");
 
   map.on("click", function (e) {
     if (!inside(bb, e.latlng)) {

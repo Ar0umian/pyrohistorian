@@ -9,6 +9,7 @@ import { render as renderCalendar } from "./calendar_view.js";
 import { render as renderReport } from "./report_view.js";
 import { render as renderAlerts } from "./alerts.js";
 import { render as renderTriage, clear as clearTriage, getMinStrength } from "./triage_console.js";
+import { drawDataLayer } from "./map_layer.js";
 
 export async function start() {
   let data;
@@ -65,6 +66,7 @@ export async function start() {
   }
 
   map = initMap(config, function (newAoi) { aoi = newAoi; update(); });
+  drawDataLayer(map, cells, config);              // shows where the data is, so you know where to click
   renderReport(document.getElementById("report"), validation, meta, config);
   update();
 }
