@@ -18,7 +18,7 @@ NASA FIRMS data.
 
 Here is a quick look at the **PyroHistorian** application interface:
 
-![Project Interface](submission/Screenshot%202026-11-15%20at%204.52.58%20PM.png)
+![Project Interface](submission/Screenshot 2026-11-15 at 4.52.58 PM.png)
 
 ## What it does
 
