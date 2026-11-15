@@ -148,7 +148,7 @@ current threshold. The text of the cards is built from numbers with fixed rules.
 
 - The alarms are historical and retrospective, not live. PyroHistorian never sends commands and does not control anything.
 - The names of the industrial ideas in `ICS_MAPPING.md` (for example ISA-18.2, EEMUA 191) are inspirations: verify them before citing.
-- The web page needs internet for the map library and map tiles.
+- The map background tiles need internet. Without it the page still works: the analysis and the cells draw on a plain background.
 
 ## 8. Next steps
 

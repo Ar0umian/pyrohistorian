@@ -52,7 +52,7 @@ Details, tables and limits: [`docs/METHODS_AND_LIMITS.md`](docs/METHODS_AND_LIMI
 
 ## Run it
 
-Requirements: Python 3 (with `numpy` and `pandas`), a browser with internet access (map library and tiles), and Node.js (only for
+Requirements: Python 3 (with `numpy` and `pandas`), a browser (internet is needed only for the map background tiles), and Node.js (only for
 the evaluation script).
 
 **Only the web page** (the generated data are in the repository):
@@ -103,7 +103,7 @@ their size: see [`docs/DATA_SOURCES.md`](docs/DATA_SOURCES.md) for the products,
 We acknowledge the use of data and/or imagery from NASA's Fire Information for Resource Management System (FIRMS)
 (https://earthdata.nasa.gov/firms), part of NASA's Earth Science Data and Information System (ESDIS).
 
-The map uses Leaflet and OpenStreetMap tiles (c) OpenStreetMap contributors.
+The map uses Leaflet (BSD-2-Clause license, a copy is in `web/vendor/leaflet`) and OpenStreetMap tiles (c) OpenStreetMap contributors.
 
 ## Team
 
